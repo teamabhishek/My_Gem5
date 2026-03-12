@@ -1,0 +1,15 @@
+1. source gem5-regular/bin/activate
+
+
+2. Run hello_world.py
+build/X86/gem5.opt --debug-flags=SyscallAll Abhishek/hello_world.py
+
+
+
+3. to run annotate.py
+../build/X86/gem5.opt -re annotate.py
+
+-re automatically redirects:
+
+stdout → simout.txt
+stderr → simerr.txt
