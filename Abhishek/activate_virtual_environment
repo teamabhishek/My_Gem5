@@ -1,4 +1,12 @@
-1. source gem5-regular/bin/activate
+1. Run to activate virtual environment
+source gem5-regular/bin/activate
+
+
+git status 	//status check
+git add . 	//add all changes
+git add practical4.l		//add one file
+git commit -m "Renamed practicals"
+git push
 
 
 2. Run hello_world.py
@@ -13,3 +21,8 @@ build/X86/gem5.opt --debug-flags=SyscallAll Abhishek/hello_world.py
 
 stdout → simout.txt
 stderr → simerr.txt
+
+
+4. run run_mem.py
+../build/ALL/gem5.opt run_mem.py -c LinearGenerator -r 50
+

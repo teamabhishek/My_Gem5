@@ -16,7 +16,7 @@ from m5.objects import ArmO3CPU
 from m5.objects import TournamentBP
 class MyOutOfOrderCore(BaseCPUCore):
     def __init__(self, width, rob_size, num_int_regs, num_fp_regs):
-        super().__init__(ArmO3CPU(), ISA.Arm)
+        super().__init__(ArmO3CPU(), ISA.ARM)
         self.core.fetchWidth = width
         self.core.decodeWidth = width
         self.core.renameWidth = width
