@@ -65,7 +65,7 @@ class O3CPUCore(RiscvO3CPU):
         self.numPhysIntRegs = num_int_regs
         self.numPhysFloatRegs = num_fp_regs
 
-        self.branchPred = TournamentBP()
+        #self.branchPred = TournamentBP()
 
         self.LQEntries = 128
         self.SQEntries = 128
@@ -129,24 +129,20 @@ class O3CPU(BaseCPUProcessor):
         )
         return score
 
-# UPDATE FOR STEP 1
-# Configure with width=10, rob_size=40, num_int_regs=50, num_fp_regs=50
 class Big(O3CPU):
     def __init__(self):
         super().__init__(
-            width=0,
-            rob_size=0,
-            num_int_regs=0,
-            num_fp_regs=0,
+            width=10,
+            rob_size=40,
+            num_int_regs=50,
+            num_fp_regs=50,
         )
 
-# UPDATE FOR STEP 1
-# Configure with width=2, rob_size=30, num_int_regs=40, num_fp_regs=40
 class Little(O3CPU):
     def __init__(self):
         super().__init__(
-            width=0,
-            rob_size=0,
-            num_int_regs=0,
-            num_fp_regs=0,
+            width=2,
+            rob_size=30,
+            num_int_regs=40,
+            num_fp_regs=40,
         )

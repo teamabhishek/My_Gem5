@@ -53,7 +53,8 @@ class PrivateL1PrivateL2SharedL3CacheHierarchy(AbstractClassicCacheHierarchy):
 
         # Use a high-bandwidth system crossbar.
         self.membus = SystemXBar(width=64)
-        # For FS mode
+        
+        # For FS mode; If CPU accesses invalid memory: BadAddr catches it and prevents crash
         self.membus.badaddr_responder = BadAddr()
         self.membus.default = self.membus.badaddr_responder.pio
 
@@ -81,6 +82,7 @@ class PrivateL1PrivateL2SharedL3CacheHierarchy(AbstractClassicCacheHierarchy):
         # Create an L3 crossbar
         self.l3_bus = L2XBar()
 
+        #Each core gets its own L1, and L2
         self.clusters = [
             self._create_core_cluster(
                 core, self.l3_bus, board.get_processor().get_isa()
@@ -88,6 +90,7 @@ class PrivateL1PrivateL2SharedL3CacheHierarchy(AbstractClassicCacheHierarchy):
             for core in board.get_processor().get_cores()
         ]
 
+        #Create shared L3
         self.l3_cache = L3Cache(size=self._l3_size, assoc=self._l3_assoc)
 
         # Connect the L3 cache to the system crossbar and L3 crossbar
@@ -102,32 +105,38 @@ class PrivateL1PrivateL2SharedL3CacheHierarchy(AbstractClassicCacheHierarchy):
         Create a core cluster with the given core.
         """
         cluster = SubSystem()
+
+        #Create L1 caches
         cluster.l1dcache = L1DCache(size=self._l1d_size, assoc=self._l1d_assoc)
         cluster.l1icache = L1ICache(
             size=self._l1i_size, assoc=self._l1i_assoc, writeback_clean=False
         )
+
+        #Create L2 cache
         cluster.l2cache = L2Cache(size=self._l2_size, assoc=self._l2_assoc)
 
+        #Create MMU caches. It is for page table walks (virtual → physical translation)
         cluster.iptw_cache = MMUCache(size="8KiB", writeback_clean=False)
         cluster.dptw_cache = MMUCache(size="8KiB", writeback_clean=False)
 
+        #Create L2 bus
         cluster.l2_bus = L2XBar()
 
-        # Connect the core to the caches
+        # Connect the core to the L1 caches
         core.connect_icache(cluster.l1icache.cpu_side)
         core.connect_dcache(cluster.l1dcache.cpu_side)
         core.connect_walker_ports(
             cluster.iptw_cache.cpu_side, cluster.dptw_cache.cpu_side
         )
 
-        # Connect the caches to the L2 bus
+        # Connect the L1 caches to the L2 bus
         cluster.l1dcache.mem_side = cluster.l2_bus.cpu_side_ports
         cluster.l1icache.mem_side = cluster.l2_bus.cpu_side_ports
         cluster.iptw_cache.mem_side = cluster.l2_bus.cpu_side_ports
         cluster.dptw_cache.mem_side = cluster.l2_bus.cpu_side_ports
 
+        #Connect L2
         cluster.l2cache.cpu_side = cluster.l2_bus.mem_side_ports
-
         cluster.l2cache.mem_side = l3_bus.cpu_side_ports
 
         if isa == ISA.X86:

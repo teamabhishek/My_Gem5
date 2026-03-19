@@ -1,3 +1,7 @@
+big-proc  
+m5out
+m5out_abhishek  
+
 MODULE.bazel.lock
 bazel-*
 build
@@ -10,8 +14,6 @@ cscope.out
 *~
 .*.swp
 .*.swo
-m5out
-m5out_abhishek
 /src/doxygen/html
 /docs/_build
 /ext/dramsim2/DRAMSim2
